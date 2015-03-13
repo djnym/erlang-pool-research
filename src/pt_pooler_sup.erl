@@ -1,18 +1,23 @@
 -module (pt_pooler_sup).
 
+-behaviour (gen_server).
+
 %% API
--export ([ init/0, do/2 ]).
+-export ([ start_link/0, do/2 ]).
 
-init () ->
-  WorkerArgs = [],
-  PoolConfig = [{name, pt_pooler_pool},
-                {max_count, 100},
-                {init_count, 10},
-                {max_age, {60, min}},
-                {start_mfa, { pt_baseline_worker, start_link, [WorkerArgs] } }
-               ],
+%% gen_server callbacks
+-export ([ init/1,
+           handle_call/3,
+           handle_cast/2,
+           handle_info/2,
+           terminate/2,
+           code_change/3
+         ]).
 
-  pooler:new_pool (PoolConfig).
+-record (state, {}).
+
+start_link () ->
+  gen_server:start_link ({local, ?MODULE}, ?MODULE, [], []).
 
 do (N, Data) ->
   case pooler:take_member (pt_pooler_pool) of
@@ -22,3 +27,38 @@ do (N, Data) ->
       pooler:return_member (pt_pooler_pool, P, ok),
       Res
   end.
+
+%%====================================================================
+%% gen_server callbacks
+%%====================================================================
+init ([]) ->
+  % ensure terminate is called
+  process_flag( trap_exit, true ),
+  WorkerArgs = [],
+  PoolConfig = [{name, pt_pooler_pool},
+                {max_count, 100},
+                {init_count, 10},
+                {max_age, {60, min}},
+                {start_mfa, { pt_baseline_worker, start_link, [WorkerArgs] } }
+               ],
+  pooler:new_pool (PoolConfig),
+  {ok, #state {}}.
+
+handle_call (Request, From, State) ->
+  error_logger:warning_msg ("~p : Unrecognized call ~p from ~p~n",
+                            [?MODULE, Request, From]),
+  { reply, ok, State }.
+
+handle_cast (Request, State) ->
+  error_logger:warning_msg ("~p : Unrecognized cast ~p~n",[?MODULE, Request]),
+  { noreply, State }.
+
+handle_info (Request, State) ->
+  error_logger:warning_msg ("~p : Unrecognized info ~p~n",[?MODULE, Request]),
+  { noreply, State }.
+
+terminate (_Reason, #state {}) ->
+  ok.
+
+code_change (_OldVsn, State, _Extra) ->
+  {ok, State}.

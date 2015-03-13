@@ -24,8 +24,9 @@ init ([]) ->
       [ { ?POOL_ID,
           {poolboy, start_link, [[{name, {local, ?POOL_ID}},
                                   {worker_module, pt_baseline_worker},
-                                  {size, PoolSize},
-                                  {max_overflow, 10}],
+                                  {size, 0},  % min_size?
+                                  {max_overflow, PoolSize}
+                                 ],
                                  [] % args for gen_server:init
                                ]},
           permanent,

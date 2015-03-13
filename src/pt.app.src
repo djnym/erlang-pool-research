@@ -4,8 +4,8 @@
     {vsn, "0.0.0"},
     {modules,[]},
     {registered,[]},
-    {applications, [kernel, stdlib]},
-    {included_applications, [pooler]},
+    {applications, [kernel, stdlib, gproc]},
+    {included_applications, [pooler, dispcount]},
     {mod, {pt_app,[]}}
   ]
 }.

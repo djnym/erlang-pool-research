@@ -18,7 +18,7 @@ start_link () ->
 %% supervisor callbacks
 %%====================================================================
 init ([]) ->
-  pt_pooler_sup:init (),
+%  pt_pooler_sup:init (),
   { ok,
     { {one_for_one, 10, 10},
       [
@@ -50,6 +50,13 @@ init ([]) ->
           supervisor,
           [pt_poolboy_sup]
         },
+        { dispcount_supersup,
+          {dispcount_supersup, start_link, []},
+          permanent,
+          infinity,
+          supervisor,
+          [dispcount_supersup]
+        },
         { pt_dispcount_sup,
           {pt_dispcount_sup, start_link, []},
           permanent,
@@ -70,6 +77,13 @@ init ([]) ->
           infinity,
           supervisor,
           [pooler_sup]
+        },
+        { pt_pooler_sup,
+          {pt_pooler_sup, start_link, []},
+          permanent,
+          2000,
+          worker,
+          [pt_pooler_sup]
         }
       ]
     }
