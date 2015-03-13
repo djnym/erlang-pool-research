@@ -6,7 +6,7 @@
 -export ([start/2, stop/1]).
 
 start () ->
-  [ ensure_started (A) || A <- [ gproc, poolboy, dispcount, pooler, leo_pod, pt ] ].
+  [ ensure_started (A) || A <- [ gproc, poolboy, dispcount, leo_pod, pt ] ].
 
 start (_Type, _StartArgs) ->
   pt_sup:start_link ().

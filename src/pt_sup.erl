@@ -63,6 +63,13 @@ init ([]) ->
           2000,
           worker,
           [pt_leo_pod_sup]
+        },
+        { pooler_sup,
+          {pooler_sup, start_link, []},
+          permanent,
+          infinity,
+          supervisor,
+          [pooler_sup]
         }
       ]
     }

@@ -5,6 +5,7 @@
     {modules,[]},
     {registered,[]},
     {applications, [kernel, stdlib]},
+    {included_applications, [pooler]},
     {mod, {pt_app,[]}}
   ]
 }.
