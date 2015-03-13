@@ -1,0 +1,13 @@
+#!/bin/sh
+
+deps=
+for d in deps/* ; do
+  deps="$deps -pa $d/ebin"
+done
+exec erl \
+  -boot start_sasl \
+  -name pt -setcookie pt \
+  $deps \
+  -pa ebin \
+  -s reloader \
+  -s pt_app

@@ -1,0 +1,10 @@
+{ application, pt,
+  [
+    {description, "Pool Tests"},
+    {vsn, "0.0.0"},
+    {modules,[]},
+    {registered,[]},
+    {applications, [kernel, stdlib]},
+    {mod, {pt_app,[]}}
+  ]
+}.
