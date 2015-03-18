@@ -1,0 +1,24 @@
+msc {
+    caller, pooler, worker;
+
+    caller=>pooler
+      [ label = "take_member\n(gen_server:call)",
+        textcolour = "red",
+        linecolour = "red"
+      ];
+    pooler=>pooler [ label = "is full?" ];
+
+    pooler>>caller [ label = "Y: full" ];
+    pooler>>caller [ label = "N: pid of worker" ];
+    caller=>worker
+      [ label = "do work\n(gen_server:call/cast/info)",
+        textcolour = "blue",
+        linecolour = "blue"
+      ];
+    worker>>caller [ label = "result" ];
+    caller=>pooler
+      [ label = "return_member\n(gen_server:cast)",
+        textcolour = "red",
+        linecolour = "red"
+      ];
+}

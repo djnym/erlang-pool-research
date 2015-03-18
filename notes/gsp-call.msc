@@ -1,0 +1,26 @@
+msc {
+    caller, gen_server_pool, gen_server_pool_proxy, worker;
+
+    caller=>gen_server_pool
+      [ label = "gen_server:call/cast/info\nto pool",
+        textcolour="red",
+        linecolour="red"
+      ];
+    gen_server_pool=>gen_server_pool [ label = "available proxy?" ];
+    gen_server_pool>>caller [ label = "N: request_dropped" ];
+    gen_server_pool=>gen_server_pool [ label = "Y: checkout proxy" ];
+    gen_server_pool=>gen_server_pool_proxy
+      [ label = "call proxy\n(erlang:send)",
+        textcolour = "blue",
+        linecolour = "blue"
+      ];
+    gen_server_pool_proxy=>worker [ label = "handle_call/cast/info\nof worker" ];
+    worker>>gen_server_pool_proxy [ label = "normal gen_server\nresponses" ];
+    gen_server_pool_proxy=>gen_server_pool
+      [ label = "checkin proxy\n(gen_server:cast)",
+        textcolour = "red",
+        linecolour = "red"
+      ];
+    gen_server_pool_proxy>>gen_server_pool [ label = "result" ];
+    gen_server_pool>>caller [ label = "result" ];
+}

@@ -1,0 +1,16 @@
+msc {
+    caller, gproc_pool, worker;
+
+    caller=>gproc_pool [ label = "claim" ];
+    gproc_pool=>gproc_pool [ label = "get gproc (ets)\nlock?" ];
+    gproc_pool>>caller [ label = "N : false" ];
+    gproc_pool=>gproc_pool [ label = "get worker pid\nfrom gproc (ets)" ];
+    gproc_pool=>worker
+      [ label = "do work\n(gen_server:call/cast/info)",
+        textcolour = "blue",
+        linecolour = "blue"
+      ];
+    worker>>gproc_pool [ label = "result" ];
+    gproc_pool=>gproc_pool [ label = "clear lock\nin gproc (ets)" ];
+    gproc_pool>>caller [ label = "result" ];
+}

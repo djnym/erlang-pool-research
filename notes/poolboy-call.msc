@@ -1,0 +1,24 @@
+msc {
+    caller, poolboy, worker;
+
+    caller=>poolboy
+      [ label = "checkout\n(gen_server:call)",
+        textcolour = "red",
+        linecolour = "red"
+      ];
+    poolboy=>poolboy [ label = "is full?" ];
+
+    poolboy>>caller [ label = "Y: full" ];
+    poolboy>>caller [ label = "N: pid of worker" ];
+    caller=>worker
+      [ label = "do work\n(gen_server:call/cast/info)",
+        textcolour = "blue",
+        linecolour = "blue"
+      ];
+    worker>>caller [ label = "result" ];
+    caller=>poolboy
+      [ label = "checkin\n(gen_server:cast)",
+        textcolour = "red",
+        linecolour = "red"
+      ];
+}

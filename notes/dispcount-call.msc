@@ -1,0 +1,36 @@
+msc {
+    caller, dispcount, dispcount_watcher, dispatcher_module, worker;
+
+    caller=>dispcount [ label = "checkout" ];
+    dispcount=>dispcount_watcher [ label = "checkout" ];
+    dispcount_watcher=>dispcount_watcher [ label = "got lock?" ];
+    dispcount_watcher>>dispcount [ label = "N: busy" ];
+    dispcount>>caller [ label = "busy" ];
+
+    dispcount_watcher=>dispcount_watcher [ label = "Y: get dispatcher" ];
+    dispcount_watcher=>dispcount_watcher
+      [ label = "checkout dispatcher\n(gen_server:call)",
+        textcolour="blue",
+        linecolour="blue" ];
+    dispcount_watcher=>dispatcher_module [ label = "checkout" ];
+    dispatcher_module>>dispcount_watcher [ label = "worker pid" ];
+    dispcount_watcher>>dispcount [ label = "worker pid" ];
+    dispcount>>caller [ label = "worker pid" ];
+
+    caller=>worker [ label = "use worker\ngen_server:call/cast/info",
+                     textcolour="blue",
+                     linecolour="blue"
+                   ];
+    worker>>caller [ label = "result" ];
+
+    caller=>dispcount [ label = "checkin" ];
+    dispcount=>dispcount_watcher [ label = "checkin" ];
+    dispcount_watcher=>dispcount_watcher
+      [ label = "checkin dispatcher\n(gen_server:cast)",
+        textcolour="blue",
+        linecolour="blue" ];
+    dispcount_watcher=>dispatcher_module [ label = "checkin" ];
+    dispcount_watcher=>dispcount_watcher [ label = "give up lock" ];
+}
+
+
