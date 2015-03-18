@@ -1,14 +1,14 @@
 -module (pt_gsp_sup).
 
 %% API
--export ([ start_link/0, do/2 ]).
+-export ([ start_link/2, do/2 ]).
 
-start_link () ->
+start_link (MinPool, MaxPool) ->
   PoolOptions =
     [ % minimum number of resources
-      { min_pool_size, 0 },
+      { min_pool_size, MinPool },
       % maximum number of resources
-      { max_pool_size, 100 },
+      { max_pool_size, MaxPool },
       % idle timeout in seconds
       { idle_timeout, 60 },
       % max age in seconds

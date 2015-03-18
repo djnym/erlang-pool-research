@@ -3,7 +3,7 @@
 -behaviour (gen_server).
 
 %% API
--export ([ start_link/0, do/2 ]).
+-export ([start_link/2, do/2]).
 
 %% gen_server callbacks
 -export ([ init/1,
@@ -16,8 +16,8 @@
 
 -record (state, {}).
 
-start_link () ->
-  gen_server:start_link ({local, ?MODULE}, ?MODULE, [], []).
+start_link (MinPool, MaxPool) ->
+  gen_server:start_link ({local, ?MODULE}, ?MODULE, [MinPool, MaxPool], []).
 
 do (N, Data) ->
   case pooler:take_member (pt_pooler_pool) of
@@ -31,13 +31,13 @@ do (N, Data) ->
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
-init ([]) ->
+init ([MinPool, MaxPool]) ->
   % ensure terminate is called
   process_flag( trap_exit, true ),
   WorkerArgs = [],
   PoolConfig = [{name, pt_pooler_pool},
-                {max_count, 100},
-                {init_count, 10},
+                {max_count, MaxPool},
+                {init_count, MinPool},
                 {max_age, {60, min}},
                 {start_mfa, { pt_baseline_worker, start_link, [WorkerArgs] } }
                ],

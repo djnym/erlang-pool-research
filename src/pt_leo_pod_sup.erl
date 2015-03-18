@@ -1,15 +1,13 @@
 -module (pt_leo_pod_sup).
 
--export ([ start_link/0, do/2 ]).
+-export ([start_link/2, do/2]).
 
 -define (POOL_ID, pt_leo_pod_pool).
--define (POOL_SIZE, 100).
 
-start_link () ->
-  MaxOverflow = 10,
+start_link (MinPool, MaxPool) ->
   GenServerArgs = [],
-  leo_pod:start_link (?POOL_ID, ?POOL_SIZE,
-                      MaxOverflow, pt_baseline_worker,
+  leo_pod:start_link (?POOL_ID, MinPool,
+                      MaxPool, pt_baseline_worker,
                       GenServerArgs, fun (_) -> void end).
 
 do (N, Data) ->

@@ -8,15 +8,15 @@
            terminate/2,
            code_change/3 ]).
 
--export ([ start_link/0, do/2 ]).
+-export ([start_link/2, do/2]).
 
 -record (state, {info}).
 
 -define (POOL_ID, pt_dispcount_dispatcher).
 -define (MOCHIGLOBAL_ID, pt_dispcount_id).
 
-start_link () ->
-  gen_server:start_link ({local, ?MODULE}, ?MODULE, [], []).
+start_link (MinPool, MaxPool) ->
+  gen_server:start_link ({local, ?MODULE}, ?MODULE, [MinPool, MaxPool], []).
 
 do (N, Data) ->
   PoolId = pool_id (),
@@ -33,14 +33,14 @@ pool_id () ->
   mochiglobal:get (?MOCHIGLOBAL_ID).
 
 %% gen_server callbacks
-init ([]) ->
+init ([_MinPool, MaxPool]) ->
   % make sure terminate is called
   process_flag (trap_exit, true),
   ok = dispcount:start_dispatch (
          ?POOL_ID,
          {pt_dispcount_dispatch, []},
          [{restart, permanent}, {shutdown, 4000},
-           {maxr, 10}, {maxt, 60}, {resources, 100}]
+           {maxr, 10}, {maxt, 60}, {resources, MaxPool}]
        ),
   {ok, Info} = dispcount:dispatcher_info (?POOL_ID),
   mochiglobal:put (?MOCHIGLOBAL_ID, Info),

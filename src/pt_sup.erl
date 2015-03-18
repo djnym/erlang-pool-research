@@ -18,33 +18,34 @@ start_link () ->
 %% supervisor callbacks
 %%====================================================================
 init ([]) ->
-%  pt_pooler_sup:init (),
+  MinPool = 10,
+  MaxPool = 20,
   { ok,
     { {one_for_one, 10, 10},
       [
         { pt_baseline_sup,
-          {pt_baseline_sup, start_link, []},
+          {pt_baseline_sup, start_link, [MinPool, MaxPool]},
           permanent,
           2000,
           supervisor,
           [pt_baseline_sup]
         },
         { pt_gsp_sup,
-          {pt_gsp_sup, start_link, []},
+          {pt_gsp_sup, start_link, [MinPool, MaxPool]},
           permanent,
           2000,
           worker,
           [pt_gsp_sup]
         },
         { pt_gproc_sup,
-          {pt_gproc_sup, start_link, []},
+          {pt_gproc_sup, start_link, [MinPool, MaxPool]},
           permanent,
           2000,
           supervisor,
           [pt_gproc_sup]
         },
         { pt_poolboy_sup,
-          {pt_poolboy_sup, start_link, []},
+          {pt_poolboy_sup, start_link, [MinPool, MaxPool]},
           permanent,
           2000,
           supervisor,
@@ -58,14 +59,14 @@ init ([]) ->
           [dispcount_supersup]
         },
         { pt_dispcount_sup,
-          {pt_dispcount_sup, start_link, []},
+          {pt_dispcount_sup, start_link, [MinPool, MaxPool]},
           permanent,
           2000,
           supervisor,
           [pt_dispcount_sup]
         },
         { pt_leo_pod_sup,
-          {pt_leo_pod_sup, start_link, []},
+          {pt_leo_pod_sup, start_link, [MinPool, MaxPool]},
           permanent,
           2000,
           worker,
@@ -79,7 +80,7 @@ init ([]) ->
           [pooler_sup]
         },
         { pt_pooler_sup,
-          {pt_pooler_sup, start_link, []},
+          {pt_pooler_sup, start_link, [MinPool, MaxPool]},
           permanent,
           2000,
           worker,

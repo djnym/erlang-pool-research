@@ -3,34 +3,36 @@
 -behaviour (supervisor).
 
 %% API
--export ([ start_link/0, do/2 ]).
+-export ([start_link/2, do/2]).
 
 %% supervisor callbacks
 -export ([init/1]).
 
 -define (POOL_ID, pt_gproc_pool).
 
-start_link () ->
-  supervisor:start_link ({local, ?POOL_ID}, ?MODULE, []).
-
-get_id () ->
-  gproc:where (gproc_pool:pick (?POOL_ID)).
+start_link (MinPool, MaxPool) ->
+  supervisor:start_link ({local, ?POOL_ID}, ?MODULE, [MinPool, MaxPool]).
 
 do (N, Data) ->
-%  gproc_pool:claim (?POOL_ID,
-%                    fun (_,Pid) ->
-%                      pt_gproc_worker:do (Pid, N, Data)
-%                    end).
+  case
+    gproc_pool:claim (?POOL_ID,
+                      fun (_,Pid) ->
+                        pt_gproc_worker:do (Pid, N, Data)
+                      end) of
+      {true, Res} -> Res;
+      false -> {error, busy}
+  end.
 
-    pt_gproc_worker:do (get_id (), N, Data).
+% get_id () ->
+%   gproc:where (gproc_pool:pick (?POOL_ID)).
+% do (N, Data) ->
+%   pt_gproc_worker:do (get_id (), N, Data).
 
 %%====================================================================
 %% supervisor callbacks
 %%====================================================================
-init ([]) ->
-  PoolSize=100,
-  ok = gproc_pool:new (?POOL_ID),
-%  ok = gproc_pool:new (?POOL_ID, claim, []),
+init ([_MinPool, MaxPool]) ->
+  ok = gproc_pool:new (?POOL_ID, claim, []),
   { ok,
     { {one_for_one, 10, 10},
       [ begin
@@ -45,7 +47,7 @@ init ([]) ->
             [pt_gproc_worker]
           }
         end
-        || N <- lists:seq (1, PoolSize)
+        || N <- lists:seq (1, MaxPool)
       ]
     }
   }.
