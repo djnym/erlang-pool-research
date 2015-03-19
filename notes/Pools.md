@@ -76,3 +76,4 @@
 | Maybe | [sidejob](https://github.com/basho/sidejob) | May 3, 2013 | Apr 11, 2014 | |
 | Yes | [epocxy](https://github.com/duomark/epocxy | Jun 28, 2013 | Feb 18, 2015 | |
 | Yes | [gen_server_pool](https://github.com/openx/gen_server_pool) | Jun 11, 2011 | Jun 4, 2013 | |
+| ??? | [resource_pool](http://erlpool.sourceforge.net/) | ? | ? | other links [description here](https://erlangcentral.org/wiki/index.php?title=Resource_Pool) and code appears to be [here](http://sourceforge.net/p/erlpool/code-0/7/tree/source/trunk/erl.rsrc.pool/src/resource_pool.erl) |
