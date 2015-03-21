@@ -1,0 +1,96 @@
+set style line 1 lw 8
+set style line 2 lw 8
+set style line 3 lw 8
+set style line 4 lw 8
+set style line 5 lw 8
+set arrow from 20,graph(0,0) to 20,graph(1.01,1.01) nohead
+set label "pool size" at 18,graph(1.02,1.02)
+
+set title "Good Results"
+set xlabel "Number of Caller Processes"
+set ylabel "Number of Good Response"
+set term postscript eps color
+set output "eps/good.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"good" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"good" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"good" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"good" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"good" with lines title "gproc"
+
+set title "Bad Results"
+set xlabel "Number of Caller Processes"
+set ylabel "Number of Bad Response"
+set term postscript eps color
+set output "eps/bad.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"bad" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"bad" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"bad" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"bad" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"bad" with lines title "gproc"
+
+
+set title "Context Switches"
+set xlabel "Number of Caller Processes"
+set ylabel "Number of Context Switches"
+set term postscript eps color
+set output "eps/context-switches.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"context" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"context" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"context" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"context" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"context" with lines title "gproc"
+
+set title "Reductions"
+set xlabel "Number of Caller Processes"
+set ylabel "Number of Reductions"
+set term postscript eps color
+set output "eps/reductions.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"reductions" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"reductions" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"reductions" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"reductions" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"reductions" with lines title "gproc"
+
+set title "Message Queue"
+set xlabel "Number of Caller Processes"
+set ylabel "Number in Message Queues"
+set term postscript eps color
+set output "eps/message_queues.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"message_queues" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"message_queues" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"message_queues" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"message_queues" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"message_queues" with lines title "gproc"
+
+set title "Average Timings"
+set xlabel "Number of Caller Processes"
+set ylabel "Microsecond Timings"
+set term postscript eps color
+set output "eps/avg_time.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"avg_time" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"avg_time" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"avg_time" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"avg_time" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"avg_time" with lines title "gproc"
+
+set title "Min Timings"
+set xlabel "Number of Caller Processes"
+set ylabel "Microsecond Timings"
+set term postscript eps color
+set output "eps/min_time.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"min_time" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"min_time" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"min_time" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"min_time" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"min_time" with lines title "gproc"
+
+set title "Max Timings"
+set xlabel "Number of Caller Processes"
+set ylabel "Microsecond Timings"
+set term postscript eps color
+set output "eps/max_time.eps"
+plot 'data/pt_poolboy_sup.dat' using "num_callers":"max_time" with lines title "poolboy", \
+     'data/pt_pooler_sup.dat' using "num_callers":"max_time" with lines title "pooler", \
+     'data/pt_gsp_sup.dat' using "num_callers":"max_time" with lines title "gsp", \
+     'data/pt_dispcount_sup.dat' using "num_callers":"max_time" with lines title "dispcount", \
+     'data/pt_gproc_sup.dat' using "num_callers":"max_time" with lines title "gproc"
