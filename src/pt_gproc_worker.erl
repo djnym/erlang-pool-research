@@ -3,7 +3,7 @@
 -behaviour (gen_server).
 
 %% API
--export ([start_link/3]).
+-export ([start_link/2]).
 -export ([do/3]).
 
 %% gen_server callbacks
@@ -17,8 +17,8 @@
 
 -record (state, {supervisor, name}).
 
-start_link (SupervisorName, Atom, Name) ->
-  gen_server:start_link ({local, Atom}, ?MODULE, [SupervisorName, Name], []).
+start_link (PoolName, Name) ->
+  gen_server:start_link (?MODULE, [PoolName, Name], []).
 
 do (Pid, N, Data) ->
   gen_server:call (Pid, {work, N, Data}).
@@ -26,11 +26,11 @@ do (Pid, N, Data) ->
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
-init ([SupervisorName, Name]) ->
+init ([PoolName, Name]) ->
   % ensure terminate is called
   process_flag( trap_exit, true ),
-  gproc_pool:connect_worker (SupervisorName, Name),
-  {ok, #state {supervisor = SupervisorName, name = Name}}.
+  gproc_pool:connect_worker (PoolName, Name),
+  {ok, #state {supervisor = PoolName, name = Name}}.
 
 handle_call ({work, N, _Data}, _From, State) ->
   timer:sleep (N),

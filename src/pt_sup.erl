@@ -18,11 +18,18 @@ start_link () ->
 %% supervisor callbacks
 %%====================================================================
 init ([]) ->
-  MinPool = 10,
+  MinPool = 20,
   MaxPool = 20,
   { ok,
     { {one_for_one, 10, 10},
       [
+        { pt_vmstats,
+          {pt_vmstats, start_link, []},
+          permanent,
+          2000,
+          worker,
+          [pt_vmstats]
+        },
         { pt_baseline_sup,
           {pt_baseline_sup, start_link, [MinPool, MaxPool]},
           permanent,
