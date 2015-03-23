@@ -1,6 +1,9 @@
 all:
 	@rebar get-deps compile
 
+graphs: data/*.dat
+	gnuplot < gnuplot_in
+
 edoc:
 	@rebar skip_deps=true doc
 
