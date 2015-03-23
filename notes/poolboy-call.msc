@@ -6,10 +6,10 @@ msc {
         textcolour = "red",
         linecolour = "red"
       ];
-    poolboy=>poolboy [ label = "is full?" ];
+    poolboy=>poolboy [ label = "worker available?" ];
 
-    poolboy>>caller [ label = "Y: full" ];
-    poolboy>>caller [ label = "N: pid of worker" ];
+    poolboy>>caller [ label = "N: full" ];
+    poolboy>>caller [ label = "Y: pid of worker" ];
     caller=>worker
       [ label = "do work\n(gen_server:call/cast/info)",
         textcolour = "blue",

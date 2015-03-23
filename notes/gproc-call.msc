@@ -4,7 +4,7 @@ msc {
     caller=>gproc_pool [ label = "claim" ];
     gproc_pool=>gproc_pool [ label = "get gproc (ets)\nlock?" ];
     gproc_pool>>caller [ label = "N : false" ];
-    gproc_pool=>gproc_pool [ label = "get worker pid\nfrom gproc (ets)" ];
+    gproc_pool=>gproc_pool [ label = "Y : get worker pid\nfrom gproc (ets)" ];
     gproc_pool=>worker
       [ label = "do work\n(gen_server:call/cast/info)",
         textcolour = "blue",
