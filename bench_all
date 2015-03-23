@@ -1,0 +1,12 @@
+#!/bin/sh
+
+for m in pt_overhead \
+      pt_baseline_sup \
+      pt_gsp_sup \
+      pt_pooler_sup \
+      pt_poolboy_sup \
+      pt_gproc_sup \
+      pt_dispcount_sup ; do
+  echo "./bench $m | tee data/$m.dat"
+  ./bench $m | tee data/$m.dat
+done
