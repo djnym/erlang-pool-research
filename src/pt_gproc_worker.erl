@@ -32,9 +32,8 @@ init ([PoolName, Name]) ->
   gproc_pool:connect_worker (PoolName, Name),
   {ok, #state {supervisor = PoolName, name = Name}}.
 
-handle_call ({work, N, _Data}, _From, State) ->
-  timer:sleep (N),
-  { reply, {ok, {worked, N}}, State};
+handle_call ({work, N, Data}, _From, State) ->
+  { reply, {ok, pt_util:work (N, Data)}, State};
 handle_call (Request, From, State) ->
   error_logger:warning_msg ("~p : Unrecognized call ~p from ~p~n",
                             [?MODULE, Request, From]),

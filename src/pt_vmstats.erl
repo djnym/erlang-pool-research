@@ -17,7 +17,7 @@
            code_change/3
           ]).
 
--record (state, {run_queue = [], total_messages = [], timer}).
+-record (state, {run_queue = 0, total_messages = 0, timer}).
 
 %-=====================================================================-
 %-                                  API                                -
@@ -42,12 +42,12 @@ init([]) ->
 
 handle_call ({fetch}, _From,
              State = #state { run_queue = RQ, total_messages = TM}) ->
-  {reply, {RQ, TM}, State#state { run_queue = [], total_messages = [] } }.
+  {reply, {RQ, TM}, State#state { run_queue = 0, total_messages = 0 } }.
 
 handle_cast ({start_sampling, Millis}, State = #state { timer = OldTref }) ->
   timer:cancel (OldTref),
   TRef = timer:send_interval (Millis, collect),
-  {noreply, State#state { timer = TRef, run_queue = [], total_messages = [] } };
+  {noreply, State#state { timer = TRef, run_queue = 0, total_messages = 0 } };
 handle_cast ({stop_sampling}, State = #state { timer = TRef }) ->
   timer:cancel (TRef),
   {noreply, State#state { timer = undefined } };
@@ -58,7 +58,10 @@ handle_info (collect,
              State = #state { run_queue = RQIn, total_messages = TMIn }) ->
   { RQ, TM } = collect_sample (),
   { noreply,
-    State#state { run_queue = [RQ | RQIn ], total_messages = [ TM | TMIn]}
+   State#state {
+      run_queue = case RQ > RQIn of true -> RQ ; false -> RQIn end,
+      total_messages = case TM > TMIn of true -> TM ; false -> TMIn end
+   }
   }.
 
 terminate (_Reason, _State) ->
@@ -79,10 +82,11 @@ collect_sample () ->
       fun (Pid, Acc) ->
         case process_info(Pid, message_queue_len) of
           undefined -> Acc;
-          {message_queue_len, Count} -> Count+Acc
+          {message_queue_len, Count} when Count > Acc -> Count;
+          {message_queue_len, _ } -> Acc
         end
       end,
       0,
       processes()
     ),
-  { RunQueue, TotalMessages}.
+  { RunQueue, TotalMessages }.
