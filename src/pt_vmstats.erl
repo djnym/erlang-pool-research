@@ -17,7 +17,11 @@
            code_change/3
           ]).
 
--record (state, {run_queue = 0, total_messages = 0, timer}).
+-record (state, {run_queue = 0,
+                 total_messages = 0,
+                 timer,
+                 start_reductions,
+                 stop_reductions}).
 
 %-=====================================================================-
 %-                                  API                                -
@@ -41,16 +45,23 @@ init([]) ->
   {ok, #state { } }.
 
 handle_call ({fetch}, _From,
-             State = #state { run_queue = RQ, total_messages = TM}) ->
-  {reply, {RQ, TM}, State#state { run_queue = 0, total_messages = 0 } }.
+             State = #state { run_queue = RQ, total_messages = TM,
+                              start_reductions = StartRed,
+                              stop_reductions = StopRed }) ->
+  {reply, {RQ, TM, StopRed - StartRed},
+          State#state { run_queue = 0, total_messages = 0,
+                        start_reductions = 0, stop_reductions = 0 } }.
 
 handle_cast ({start_sampling, Millis}, State = #state { timer = OldTref }) ->
   timer:cancel (OldTref),
-  TRef = timer:send_interval (Millis, collect),
-  {noreply, State#state { timer = TRef, run_queue = 0, total_messages = 0 } };
+  {_,Red} = process_info(self(), reductions),
+  {ok, TRef} = timer:send_interval (Millis, collect),
+  {noreply, State#state { timer = TRef, run_queue = 0, total_messages = 0,
+                          start_reductions = Red } };
 handle_cast ({stop_sampling}, State = #state { timer = TRef }) ->
   timer:cancel (TRef),
-  {noreply, State#state { timer = undefined } };
+  {_,Red} = process_info(self(), reductions),
+  {noreply, State#state { timer = undefined, stop_reductions = Red } };
 handle_cast (_Request, State) ->
   {noreply, State}.
 

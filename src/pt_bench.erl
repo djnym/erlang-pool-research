@@ -72,7 +72,7 @@ bench_one([Device, Name, NumberToSpawn, NumberToRun, {Module, Fun, Args}]) ->
   pt_vmstats:stop_sampling (),
   garbage_collect(),
   {ContextSwitches1, Reductions1} = collect_stats (),
-  {RunQueueMax, MessageQueueMax} = pt_vmstats:fetch(),
+  {RunQueueMax, MessageQueueMax, _ReductionsUsed} = pt_vmstats:fetch(),
   TimingAvg = trunc(Sum/ Count),
 
   case Device of
