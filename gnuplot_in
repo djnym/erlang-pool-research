@@ -59,6 +59,18 @@ plot 'data/pt_poolboy_sup.dat' using "num_callers":"reductions" with lp title "p
      'data/pt_dispcount_sup.dat' using "num_callers":"reductions" with lp title "dispcount", \
      'data/pt_gproc_sup.dat' using "num_callers":"reductions" with lp title "gproc"
 
+set output "eps/reductions-minus-overhead.eps"
+plot "< paste data/pt_poolboy_sup.dat data/pt_overhead.dat" \
+       using 2:($5-$17) with lines title "poolboy", \
+     "< paste data/pt_pooler_sup.dat data/pt_overhead.dat" \
+       using 2:($5-$17) with lines title "pooler", \
+     "< paste data/pt_gsp_sup.dat data/pt_overhead.dat" \
+       using 2:($5-$17) with lines title 'gen\_server\_pool', \
+     "< paste data/pt_dispcount_sup.dat data/pt_overhead.dat" \
+       using 2:($5-$17) with lines title 'dispcount', \
+     "< paste data/pt_gproc_sup.dat data/pt_overhead.dat" \
+       using 2:($5-$17) with lines title 'gproc'
+
 #set title "Message Queue"
 #set xlabel "Number of Caller Processes"
 #set ylabel "Number in Message Queues"
