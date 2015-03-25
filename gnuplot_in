@@ -74,6 +74,7 @@ plot "< paste data/pt_poolboy_sup.dat data/pt_overhead.dat" \
 #set title "Message Queue"
 #set xlabel "Number of Caller Processes"
 #set ylabel "Number in Message Queues"
+set key top left
 set output "eps/message_queues.eps"
 plot 'data/pt_poolboy_sup.dat' using "num_callers":"message_queues" with lp title "poolboy", \
      'data/pt_pooler_sup.dat' using "num_callers":"message_queues" with lp title "pooler", \
