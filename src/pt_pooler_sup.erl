@@ -31,13 +31,13 @@ do (N, Data) ->
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
-init ([MinPool, MaxPool]) ->
+init ([_MinPool, MaxPool]) ->
   % ensure terminate is called
   process_flag( trap_exit, true ),
   WorkerArgs = [],
   PoolConfig = [{name, pt_pooler_pool},
                 {max_count, MaxPool},
-                {init_count, MinPool},
+                {init_count, MaxPool},
                 {max_age, {60, min}},
                 {start_mfa, { pt_baseline_worker, start_link, [WorkerArgs] } }
                ],

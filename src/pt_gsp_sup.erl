@@ -3,10 +3,10 @@
 %% API
 -export ([ start_link/2, do/2 ]).
 
-start_link (MinPool, MaxPool) ->
+start_link (_MinPool, MaxPool) ->
   PoolOptions =
     [ % minimum number of resources
-      { min_pool_size, MinPool },
+      { min_pool_size, MaxPool },
       % maximum number of resources
       { max_pool_size, MaxPool },
       % idle timeout in seconds
