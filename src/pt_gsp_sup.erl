@@ -1,7 +1,17 @@
 -module (pt_gsp_sup).
 
 %% API
--export ([ start_link/2, do/2 ]).
+-export ([ start_link/2, do/2, superconfig/2 ]).
+
+superconfig (MinPool, MaxPool) ->
+  [ { pt_gsp_sup,
+      {pt_gsp_sup, start_link, [MinPool, MaxPool]},
+      permanent,
+      2000,
+      worker,
+      [pt_gsp_sup]
+    }
+  ].
 
 start_link (_MinPool, MaxPool) ->
   PoolOptions =

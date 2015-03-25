@@ -6,10 +6,11 @@
 -export ([start/2, stop/1]).
 
 start () ->
-  [ ensure_started (A) || A <- [ gproc, pt ] ].
+  [ ensure_started (A) || A <- [ pt ] ].
 
 start (_Type, _StartArgs) ->
-  pt_sup:start_link ().
+  {ok, Mods} = application:get_env (pt, modules),
+  pt_sup:start_link (Mods).
 
 stop (_State) ->
   ok.

@@ -3,7 +3,7 @@
 -behaviour (gen_server).
 
 %% API
--export ([start_link/2, do/2]).
+-export ([start_link/2, do/2, superconfig/2]).
 
 %% gen_server callbacks
 -export ([ init/1,
@@ -15,6 +15,23 @@
          ]).
 
 -record (state, {}).
+
+superconfig (MinPool, MaxPool) ->
+  [ { pooler_sup,
+      {pooler_sup, start_link, []},
+      permanent,
+      infinity,
+      supervisor,
+      [pooler_sup]
+    },
+    { pt_pooler_sup,
+      {pt_pooler_sup, start_link, [MinPool, MaxPool]},
+      permanent,
+      2000,
+      worker,
+      [pt_pooler_sup]
+    }
+  ].
 
 start_link (MinPool, MaxPool) ->
   gen_server:start_link ({local, ?MODULE}, ?MODULE, [MinPool, MaxPool], []).

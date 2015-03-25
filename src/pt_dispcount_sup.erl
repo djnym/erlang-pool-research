@@ -8,12 +8,29 @@
            terminate/2,
            code_change/3 ]).
 
--export ([start_link/2, do/2]).
+-export ([start_link/2, do/2, superconfig/2]).
 
 -record (state, {info}).
 
 -define (POOL_ID, pt_dispcount_dispatcher).
 -define (MOCHIGLOBAL_ID, pt_dispcount_id).
+
+superconfig (MinPool, MaxPool) ->
+  [ { dispcount_supersup,
+      {dispcount_supersup, start_link, []},
+      permanent,
+      infinity,
+      supervisor,
+      [dispcount_supersup]
+    },
+    { pt_dispcount_sup,
+      {pt_dispcount_sup, start_link, [MinPool, MaxPool]},
+      permanent,
+      2000,
+      supervisor,
+      [pt_dispcount_sup]
+    }
+  ].
 
 start_link (MinPool, MaxPool) ->
   gen_server:start_link ({local, ?MODULE}, ?MODULE, [MinPool, MaxPool], []).

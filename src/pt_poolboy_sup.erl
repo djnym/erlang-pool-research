@@ -1,12 +1,22 @@
 -module (pt_poolboy_sup).
 
 %% API
--export ([start_link/2, do/2]).
+-export ([start_link/2, do/2, superconfig/2]).
 
 %% supervisor callbacks
 -export ([init/1]).
 
 -define (POOL_ID, pt_poolboy_pool).
+
+superconfig (MinPool, MaxPool) ->
+  [ { pt_poolboy_sup,
+      {pt_poolboy_sup, start_link, [MinPool, MaxPool]},
+      permanent,
+      2000,
+      supervisor,
+      [pt_poolboy_sup]
+    }
+  ].
 
 start_link (MinPool, MaxPool) ->
   supervisor:start_link ({local, ?MODULE}, ?MODULE, [MinPool, MaxPool]).

@@ -1,7 +1,7 @@
 -module (pt_bench).
 
 -export ([setup/0, teardown/1]).
--export ([warm/0,do_one/1, do/0, do/7, spawn_test_many/5, test_many_response/5,
+-export ([warm/1,do_one/1, do/0, do/7, spawn_test_many/5, test_many_response/5,
           random_string/1, random_dict/1, all/0, pools/0 ]).
 
 setup () ->
@@ -28,12 +28,14 @@ do_one (Mod) ->
   do (ok, 1,45, 1000, [Mod], 5, undefined),
   do (ok, 1,50, 1000, [Mod], 5, undefined).
 
-warm () ->
+warm (Mods) when is_list (Mods) ->
   % warm up
-  do (undefined, 1, 5, 10, all(), 2, undefined).
+  [ do (undefined, 1, 5, 10, M, 2, undefined) || M <- Mods ];
+warm (Mod) ->
+  do (undefined, 1, 5, 10, [Mod], 2, undefined).
 
 do () ->
-  warm (),
+  warm (all()),
   lists:foreach (fun do_one/1, all()).
 
 do(Device, Count, NumberToSpawn, NumberToRun, Modules, Pause, Data) ->
@@ -66,7 +68,7 @@ bench(Device, NumberToSpawn, NumberToRun, Modules, Pause, Data, N) ->
 bench_one([Device, Name, NumberToSpawn, NumberToRun, {Module, Fun, Args}]) ->
   garbage_collect(),
   {ContextSwitches0, Reductions0 } = collect_stats (),
-  pt_vmstats:start_sampling (5),
+  pt_vmstats:start_sampling (2),
   {{Good, Busy, _Errs}, {Min, Max, Sum,Count}} =
     erlang:apply (Module, Fun, Args),
   pt_vmstats:stop_sampling (),

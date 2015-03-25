@@ -3,12 +3,28 @@
 -behaviour (supervisor).
 
 %% API
--export ([start_link/2, do/2]).
+-export ([start_link/2, do/2, superconfig/2]).
 
 %% supervisor callbacks
 -export ([init/1]).
 
 -define (POOL_ID, pt_gproc_pool).
+
+superconfig (MinPool, MaxPool) ->
+  [ { gproc,
+      {gproc_sup, start_link, [[]]},
+      permanent,
+      2000,
+      supervisor,
+      [gproc]
+    },
+    { pt_gproc_sup,
+      {pt_gproc_sup, start_link, [MinPool, MaxPool]},
+      permanent,
+      2000,
+      supervisor,
+      [pt_gproc_sup]
+    } ].
 
 start_link (MinPool, MaxPool) ->
   supervisor:start_link ({local, ?POOL_ID}, ?MODULE, [MinPool, MaxPool]).
