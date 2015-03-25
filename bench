@@ -11,5 +11,6 @@ exec erl \
   -name pt -setcookie pt \
   $deps \
   -pa ebin \
+  -pt modules "[$lib]" \
   -s pt_app \
-  -eval "pt_bench:warm(), pt_bench:do_one($lib), init:stop()"
+  -eval "pt_bench:warm($lib), pt_bench:do_one($lib), init:stop()"
